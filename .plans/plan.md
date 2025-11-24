@@ -79,16 +79,19 @@ The plan follows the Django and Python best practices defined in `.junie/guideli
 - Keep logic minimal in templates; formatting and selection happen in views/forms — [x]
 - Simple, clean UI with accessible labels and buttons; optional styling via basic CSS in `static/` — [x]
 
-## 6. Security and Settings
-- CSRF protection via Django forms and `{% csrf_token %}` in templates
-- Use environment variables for all secrets/settings in `settings.py`
-- Configure `ALLOWED_HOSTS` appropriately
-- Consider security middlewares already included by Django; keep default `X_FRAME_OPTIONS` and `SECURE_*` toggles produc­tion-ready via env
+## 6. Security and Settings — [x] Completed (2025-11-24 16:50)
+- CSRF protection via Django forms and `{% csrf_token %}` in templates — [x]
+- Use environment variables for all secrets/settings in `settings.py` — [x]
+- Configure `ALLOWED_HOSTS` appropriately — [x]
+- Consider security middlewares already included by Django; keep default `X_FRAME_OPTIONS` and `SECURE_*` toggles production-ready via env — [x]
+  - Added env-driven `CSRF_TRUSTED_ORIGINS`, secure cookies, HSTS, SSL redirect, `SECURE_REFERRER_POLICY`, `X_FRAME_OPTIONS`, and optional `SECURE_PROXY_SSL_HEADER` — [x]
 
-## 7. Database and Migrations
-- Use migrations for all DB changes
-- Add indexes via `db_index=True` on frequently queried fields (`completed`, `due_date`)
-- Avoid N+1 queries (not likely here); use `only()` in list view to limit columns
+## 7. Database and Migrations — [x] Completed (2025-11-24 16:54)
+- Use migrations for all DB changes — [x]
+  - Initial migration created: `todos/migrations/0001_initial.py` — [x]
+  - Local database migrated (SQLite default) — [x]
+- Add indexes via `db_index=True` on frequently queried fields (`completed`, `due_date`) — [x]
+- Avoid N+1 queries (not likely here); use `only()` in list view to limit columns — [x]
 
 ## 8. Testing (pytest-django)
 1. Configure pytest

@@ -26,6 +26,28 @@ def env_bool(name: str, default: bool = False) -> bool:
     return value.strip().lower() in {"1", "true", "yes", "on"}
 
 
+def env_list(name: str, default: List[str] | None = None) -> List[str]:
+    """Fetch a comma-separated list from environment variables.
+
+    Strips spaces and ignores empty items.
+    """
+    raw = os.getenv(name)
+    if not raw:
+        return default or []
+    return [item.strip() for item in raw.split(",") if item.strip()]
+
+
+def env_int(name: str, default: int) -> int:
+    """Fetch an integer environment variable with fallback."""
+    value = os.getenv(name)
+    if value is None:
+        return default
+    try:
+        return int(value)
+    except ValueError:
+        return default
+
+
 def parse_database_url(url: str) -> Dict[str, Any]:
     """Very small DATABASE_URL parser supporting postgres and sqlite.
 
@@ -60,6 +82,11 @@ DEBUG = env_bool("DEBUG", default=True)
 
 raw_allowed_hosts = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1")
 ALLOWED_HOSTS: List[str] = [h.strip() for h in raw_allowed_hosts.split(",") if h.strip()]
+
+# CSRF trusted origins (must include scheme), e.g., "https://example.com, http://localhost:8000"
+_csrf_trusted = env_list("CSRF_TRUSTED_ORIGINS")
+if _csrf_trusted:
+    CSRF_TRUSTED_ORIGINS = _csrf_trusted
 
 
 INSTALLED_APPS = [
@@ -113,11 +140,11 @@ if database_url:
     except ValueError:
         # Fallback to SQLite on parse errors to avoid crashes in local dev
         DATABASES = {
-            "default": {
-                "ENGINE": "django.db.backends.sqlite3",
-                "NAME": str(BASE_DIR / "db.sqlite3"),
-            }
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": str(BASE_DIR / "db.sqlite3"),
         }
+    }
 else:
     DATABASES = {
         "default": {
@@ -145,5 +172,33 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 
+# Optional STATIC_ROOT for production collectstatic
+STATIC_ROOT = os.getenv("STATIC_ROOT", str(BASE_DIR / "staticfiles"))
+
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# ---------------------------------------------------------------------------
+# Security settings (configurable via environment variables)
+# These defaults favor local development safety while allowing production hardening via env
+# ---------------------------------------------------------------------------
+
+# Cookie settings
+SESSION_COOKIE_SECURE = env_bool("SESSION_COOKIE_SECURE", default=not DEBUG)
+CSRF_COOKIE_SECURE = env_bool("CSRF_COOKIE_SECURE", default=not DEBUG)
+SESSION_COOKIE_SAMESITE = os.getenv("SESSION_COOKIE_SAMESITE", "Lax")
+CSRF_COOKIE_SAMESITE = os.getenv("CSRF_COOKIE_SAMESITE", "Lax")
+
+# SSL / HSTS
+SECURE_SSL_REDIRECT = env_bool("SECURE_SSL_REDIRECT", default=not DEBUG)
+SECURE_HSTS_SECONDS = env_int("SECURE_HSTS_SECONDS", 0 if DEBUG else 31536000)
+SECURE_HSTS_INCLUDE_SUBDOMAINS = env_bool("SECURE_HSTS_INCLUDE_SUBDOMAINS", default=not DEBUG)
+SECURE_HSTS_PRELOAD = env_bool("SECURE_HSTS_PRELOAD", default=not DEBUG)
+
+# Security headers
+SECURE_REFERRER_POLICY = os.getenv("SECURE_REFERRER_POLICY", "same-origin")
+X_FRAME_OPTIONS = os.getenv("X_FRAME_OPTIONS", "DENY")
+
+# If running behind a reverse proxy that sets X-Forwarded-Proto
+if env_bool("USE_SECURE_PROXY_SSL_HEADER", default=False):
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
