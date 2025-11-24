@@ -46,38 +46,38 @@ The plan follows the Django and Python best practices defined in `.junie/guideli
 3. Admin — [x]
    - Register `Todo` with list display (`title`, `due_date`, `completed`, `created_at`), search (`title`), filters (`completed`, `due_date`) — [x]
 
-## 3. Forms
-- Use `ModelForm` for `Todo`
-  - Include fields: `title`, `description`, `due_date`, `completed`
-  - Add basic widgets (e.g., `DateInput` with type="date")
-  - Server-side validation: ensure `due_date` is not in the past (warning/validation error as desired)
+## 3. Forms — [x] Completed (2025-11-24 16:44)
+- Use `ModelForm` for `Todo` — [x]
+  - Include fields: `title`, `description`, `due_date`, `completed` — [x]
+  - Add basic widgets (e.g., `DateInput` with type="date") — [x]
+  - Server-side validation: ensure `due_date` is not in the past (warning/validation error as desired) — [x]
 
-## 4. Views and URLs
+## 4. Views and URLs — [x] Completed (2025-11-24 16:44)
 1. Views (class-based)
-   - `TodoListView` (`ListView`):
-     - Paginate with `paginate_by = 10` (per guidelines)
-     - Allow filtering by completion status via query param `?status=(all|open|completed)`
-     - Order by `completed`, `due_date`, then `-created_at`
-     - Optimize with `.only("id", "title", "due_date", "completed")`
-   - `TodoCreateView` (`CreateView`) with `ModelForm`
-   - `TodoUpdateView` (`UpdateView`) with `ModelForm`
-   - `TodoDeleteView` (`DeleteView`) with confirmation
-   - `toggle_complete` (`View` or small function view): toggles `completed` with `get_object_or_404`
-   - All views must validate and sanitize inputs (ModelForm covers most cases), use `try/except` for graceful handling
+   - `TodoListView` (`ListView`) — [x]
+     - Paginate with `paginate_by = 10` (per guidelines) — [x]
+     - Allow filtering by completion status via query param `?status=(all|open|completed)` — [x]
+     - Order by `completed`, `due_date`, then `-created_at` — [x]
+     - Optimize with `.only("id", "title", "due_date", "completed")` — [x]
+   - `TodoCreateView` (`CreateView`) with `ModelForm` — [x]
+   - `TodoUpdateView` (`UpdateView`) with `ModelForm` — [x]
+   - `TodoDeleteView` (`DeleteView`) with confirmation — [x]
+   - `toggle_complete` (`View` or small function view): toggles `completed` with `get_object_or_404` — [x]
+   - All views must validate and sanitize inputs (ModelForm covers most cases), use `try/except` for graceful handling — [x]
 2. URL configuration (end with trailing slashes)
-   - `todos/` → list (name: `todos:list`)
-   - `todos/new/` → create (name: `todos:create`)
-   - `todos/<int:pk>/edit/` → update (name: `todos:edit`)
-   - `todos/<int:pk>/delete/` → delete (name: `todos:delete`)
-   - `todos/<int:pk>/toggle-complete/` → toggle (name: `todos:toggle_complete`)
-   - Include `app_name = "todos"` in `todos/urls.py`
+   - `todos/` → list (name: `todos:list`) — [x]
+   - `todos/new/` → create (name: `todos:create`) — [x]
+   - `todos/<int:pk>/edit/` → update (name: `todos:edit`) — [x]
+   - `todos/<int:pk>/delete/` → delete (name: `todos:delete`) — [x]
+   - `todos/<int:pk>/toggle-complete/` → toggle (name: `todos:toggle_complete`) — [x]
+   - Include `app_name = "todos"` in `todos/urls.py` — [x]
 
-## 5. Templates
-- Use template inheritance with `templates/base.html`
-- Templates: `todos/home.html`, `todos/form.html`, `todos/confirm_delete.html`
-- Use `{% load static %}` and proper CSRF protection in forms
-- Keep logic minimal in templates; formatting and selection happen in views/forms
-- Simple, clean UI with accessible labels and buttons; optional styling via basic CSS in `static/`
+## 5. Templates — [x] Completed (2025-11-24 16:44)
+- Use template inheritance with `templates/base.html` — [x]
+- Templates: `todos/home.html`, `todos/form.html`, `todos/confirm_delete.html` — [x]
+- Use `{% load static %}` and proper CSRF protection in forms — [x]
+- Keep logic minimal in templates; formatting and selection happen in views/forms — [x]
+- Simple, clean UI with accessible labels and buttons; optional styling via basic CSS in `static/` — [x]
 
 ## 6. Security and Settings
 - CSRF protection via Django forms and `{% csrf_token %}` in templates
