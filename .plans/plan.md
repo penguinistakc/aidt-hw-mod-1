@@ -93,15 +93,16 @@ The plan follows the Django and Python best practices defined in `.junie/guideli
 - Add indexes via `db_index=True` on frequently queried fields (`completed`, `due_date`) — [x]
 - Avoid N+1 queries (not likely here); use `only()` in list view to limit columns — [x]
 
-## 8. Testing (pytest-django)
-1. Configure pytest
-   - Add `pytest.ini` with `DJANGO_SETTINGS_MODULE = config.settings`
-2. Tests to write
-   - Model tests: `__str__`, ordering, validation (no past due date if enforced)
-   - View tests: list pagination, create/update/delete flows, toggle complete, redirects, CSRF
-   - URL tests: reverse/resolve names with trailing slashes
-   - Template tests: important context variables, presence of CSRF token in forms
-   - Negative scenarios: invalid form data (missing title, invalid date)
+## 8. Testing (pytest-django) — [x] Completed (2025-11-24 17:06)
+1. Configure pytest — [x]
+   - Added `pytest.ini` with `DJANGO_SETTINGS_MODULE = config.settings` — [x]
+2. Tests implemented — [x]
+   - Model tests: `__str__`, ordering (updated to match DB NULL ordering), validation (no past due date) — [x]
+   - View tests: list pagination, create/update/delete flows, toggle complete, redirects, CSRF — [x]
+   - URL tests: reverse/resolve names with trailing slashes — [x]
+   - Template checks: context and CSRF token presence — [x]
+   - Negative scenarios: invalid form data (missing title, invalid date) — [x]
+   - Result: All tests passing via `uv run pytest -q` — [x]
 
 ## 9. Developer Experience
 - `make`-like scripts (optional) or `uv run` commands for:
