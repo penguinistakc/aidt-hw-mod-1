@@ -8,43 +8,43 @@ This plan outlines how to build a simple Django web application that can:
 The plan follows the Django and Python best practices defined in `.junie/guidelines.md` and the project README.
 
 ## 1. Project Setup
-1. Initialize environment and dependencies
-   - Use `uv` for package management
-   - Add runtime and dev dependencies:
-     - django
-     - psycopg2-binary (optional; use SQLite by default for local dev)
-     - pytest
-     - pytest-django
-     - isort
-     - ruff (formatter and linter; configure to 120-char line length)
-   - Configure `pyproject.toml` for tools (isort/ruff) if not already present
-2. Start Django project
-   - `django-admin startproject config .` (single settings module approach)
-   - Ensure secrets are read from environment variables (e.g., `SECRET_KEY`, `DEBUG`, `ALLOWED_HOSTS`, `DATABASE_URL`)
-   - Do not commit secrets; reference `.env` (not committed) via `os.environ`
-3. Static and templates setup
-   - Configure `TEMPLATES` with `DIRS=[BASE_DIR / "templates"]`
-   - Configure `STATIC_URL` and `STATICFILES_DIRS = [BASE_DIR / "static"]`
-   - Optionally add WhiteNoise for static serving in production (not required for local dev)
+1. Initialize environment and dependencies — [x] Completed (2025-11-24)
+   - Use `uv` for package management — [x] (uv.lock present)
+   - Add runtime and dev dependencies — [x]
+     - django — [x]
+     - psycopg2-binary (optional; use SQLite by default for local dev) — [x] (optional extra: `postgres` group)
+     - pytest — [x]
+     - pytest-django — [x]
+     - isort — [x]
+     - ruff (formatter and linter; configure to 120-char line length) — [x]
+   - Configure `pyproject.toml` for tools (isort/ruff) — [x]
+2. Start Django project — [x] Completed (2025-11-24)
+   - `django-admin startproject config .` (single settings module approach) — [x]
+   - Ensure secrets are read from environment variables (e.g., `SECRET_KEY`, `DEBUG`, `ALLOWED_HOSTS`, `DATABASE_URL`) — [x]
+   - Do not commit secrets; reference `.env` (not committed) via `os.environ` — [x] (secrets read from env; no secrets committed)
+3. Static and templates setup — [x] Completed (2025-11-24)
+   - Configure `TEMPLATES` with `DIRS=[BASE_DIR / "templates"]` — [x]
+   - Configure `STATIC_URL` and `STATICFILES_DIRS = [BASE_DIR / "static"]` — [x]
+   - Optionally add WhiteNoise for static serving in production (not required for local dev) — [ ] Optional, not required for local dev
 
-## 2. App Creation and Data Model
-1. Create app `todos`
-   - `python manage.py startapp todos`
-   - Add `todos` to `INSTALLED_APPS`
-2. Model design (use Django ORM; avoid raw SQL)
-   - `Todo` model
-     - `title: CharField(max_length=200)` (required)
-     - `description: TextField(blank=True)`
-     - `due_date: DateField(null=True, blank=True, db_index=True)`
-     - `completed: BooleanField(default=False, db_index=True)`
-     - `created_at: DateTimeField(auto_now_add=True)`
-     - `updated_at: DateTimeField(auto_now=True)`
-     - `__str__`: return f"{title} (due {due_date})" when due date exists, else title
+## 2. App Creation and Data Model — [x] Completed (2025-11-24 16:12)
+1. Create app `todos` — [x]
+   - `python manage.py startapp todos` — [x]
+   - Add `todos` to `INSTALLED_APPS` — [x]
+2. Model design (use Django ORM; avoid raw SQL) — [x]
+   - `Todo` model — [x]
+     - `title: CharField(max_length=200)` (required) — [x]
+     - `description: TextField(blank=True)` — [x]
+     - `due_date: DateField(null=True, blank=True, db_index=True)` — [x]
+     - `completed: BooleanField(default=False, db_index=True)` — [x]
+     - `created_at: DateTimeField(auto_now_add=True)` — [x]
+     - `updated_at: DateTimeField(auto_now=True)` — [x]
+     - `__str__`: return f"{title} (due {due_date})" when due date exists, else title — [x]
      - `class Meta`:
-       - `ordering = ["completed", "due_date", "-created_at"]`
-       - `verbose_name = "To‑Do Item"`, `verbose_name_plural = "To‑Do Items"`
-3. Admin
-   - Register `Todo` with list display (`title`, `due_date`, `completed`, `created_at`), search (`title`), filters (`completed`, `due_date`)
+       - `ordering = ["completed", "due_date", "-created_at"]` — [x]
+       - `verbose_name = "To‑Do Item"`, `verbose_name_plural = "To‑Do Items"` — [x]
+3. Admin — [x]
+   - Register `Todo` with list display (`title`, `due_date`, `completed`, `created_at`), search (`title`), filters (`completed`, `due_date`) — [x]
 
 ## 3. Forms
 - Use `ModelForm` for `Todo`
@@ -74,7 +74,7 @@ The plan follows the Django and Python best practices defined in `.junie/guideli
 
 ## 5. Templates
 - Use template inheritance with `templates/base.html`
-- Templates: `todos/list.html`, `todos/form.html`, `todos/confirm_delete.html`
+- Templates: `todos/home.html`, `todos/form.html`, `todos/confirm_delete.html`
 - Use `{% load static %}` and proper CSRF protection in forms
 - Keep logic minimal in templates; formatting and selection happen in views/forms
 - Simple, clean UI with accessible labels and buttons; optional styling via basic CSS in `static/`
